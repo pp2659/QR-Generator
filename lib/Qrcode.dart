@@ -1,17 +1,34 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'constant.dart';
 import 'dart:ui';
 
 class Qr extends StatefulWidget {
+  String name;
+  String age;
+  String gender;
+  Qr(this.name,this.age,this.gender);
+
+
+
   @override
-  _QrState createState() => _QrState();
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return _QrState(name,age,gender);
+  }
 }
 
 class _QrState extends State<Qr> {
-
+  String name;
+  String age;
+  String gender;
+  String content;
+  _QrState(this.name,this.age,this.gender);
   @override
+
   Widget build(BuildContext context) {
+    content=name+" "+age+" "+gender;
     return SafeArea(
       child: Scaffold(
 
@@ -63,7 +80,12 @@ class _QrState extends State<Qr> {
                         padding: EdgeInsets.all(20),
                         child: Row(
                           children: [
-                            Container(height: 100,width: 100, color: Colors.white,),
+                            QrImage(
+                              backgroundColor: Colors.white,
+                              data: content,
+                              version: QrVersions.auto,
+                              size: 100.0,
+                            ),
                             Padding(
                               padding: const EdgeInsets.all(20.0),
                               child: Column(
@@ -128,4 +150,5 @@ class _QrState extends State<Qr> {
       ),
     );
   }
-}
+  }
+

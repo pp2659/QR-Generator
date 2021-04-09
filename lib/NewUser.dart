@@ -1,10 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'constant.dart';
 import 'dart:ui';
 import 'package:qrscanner/Admin.dart';
 import 'package:qrscanner/Qrcode.dart';
-
+final _firestore= FirebaseFirestore.instance;
 class NewUser extends StatefulWidget {
   @override
   _NewUserState createState() => _NewUserState();
@@ -78,11 +79,14 @@ class _NewUserState extends State<NewUser> {
                                 ),
                               ),
                               TextFormField(
-
+                                style: TextStyle(color: Colors.white),
                                 decoration: InputDecoration(
                                   hintText: 'Enter your Name',
                                   fillColor: Colors.white,
                                 ),
+                                onChanged: (value){
+                                  name=value;
+                                },
                                 validator: (value) {
                                   if (value.isEmpty) {
                                     return 'Please enter your Name';
@@ -105,7 +109,9 @@ class _NewUserState extends State<NewUser> {
                                 ),
                               ),
                               TextFormField(
+                                style: TextStyle(color: Colors.white),
                                 decoration: InputDecoration(
+                                  focusColor: Colors.white,
                                   hintText: 'Enter your Phone Number',
                                 ),
                                 validator: (value) {
@@ -113,6 +119,9 @@ class _NewUserState extends State<NewUser> {
                                     return "Please enter the Phone Number";
                                   }
                                   return null;
+                                },
+                                onChanged: (value){
+                                  mobile=value;
                                 },
                                 onSaved: (newValue) {
                                   mobile = newValue;
@@ -130,6 +139,7 @@ class _NewUserState extends State<NewUser> {
                                 ),
                               ),
                               TextFormField(
+                                style: TextStyle(color: Colors.white),
                                 decoration: InputDecoration(
                                   hintText: 'Enter your email',
                                 ),
@@ -138,6 +148,9 @@ class _NewUserState extends State<NewUser> {
                                     return "Please enter the Email";
                                   }
                                   return null;
+                                },
+                                onChanged: (value){
+                                  email=value;
                                 },
                                 onSaved: (newValue) {
                                   email = newValue;
@@ -155,6 +168,7 @@ class _NewUserState extends State<NewUser> {
                                 ),
                               ),
                               TextFormField(
+                                style: TextStyle(color: Colors.white),
                                 decoration: InputDecoration(
                                   hintText: 'Enter your age',
                                 ),
@@ -163,6 +177,9 @@ class _NewUserState extends State<NewUser> {
                                     return "Please enter the Age";
                                   }
                                   return null;
+                                },
+                                onChanged: (value){
+                                  age=value;
                                 },
                                 onSaved: (newValue) {
                                   age = newValue;
@@ -180,6 +197,7 @@ class _NewUserState extends State<NewUser> {
                                 ),
                               ),
                               TextFormField(
+                                style: TextStyle(color: Colors.white),
                                 decoration: InputDecoration(
                                   hintText: 'Enter your gender',
                                 ),
@@ -188,6 +206,9 @@ class _NewUserState extends State<NewUser> {
                                     return "Please enter the gender";
                                   }
                                   return null;
+                                },
+                                onChanged: (value){
+                                  gender=value;
                                 },
                                 onSaved: (newValue) {
                                   gender = newValue;
@@ -222,13 +243,32 @@ class _NewUserState extends State<NewUser> {
                               ),
                               onPressed: () {
                                 print('successful');
+
+                                _firestore.collection('user').add(
+                                    {
+                                      'name':name,
+                                      'mobile':mobile,
+                                      'email':email,
+                                      'age':age,
+                                      'gender':gender
+                                    }
+                                ).then((value) => print(value.id));
                               },
                               child: InkWell(
                                 onTap: () {
                                   print('successful');
+                                  _firestore.collection('user').add(
+                                      {
+                                        'name':name,
+                                        'mobile':mobile,
+                                        'email':email,
+                                        'age':age,
+                                        'gender':gender
+                                      }
+                                  ).then((value) => print(value.id));
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => Qr()),
+                                    MaterialPageRoute(builder: (context) => Qr(name,gender,age)),
                                   );
                                 },
                                 child: Align(
