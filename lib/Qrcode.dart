@@ -56,6 +56,8 @@ class _QrState extends State<Qr> {
                               child: Text(
                                 'QR CODE GENETATED',
 
+
+
                                 style: TextStyle(
                                   fontSize:
                                   MediaQuery.of(context).size.height / 30,
