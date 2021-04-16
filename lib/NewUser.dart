@@ -268,7 +268,7 @@ class _NewUserState extends State<NewUser> {
                                   ).then((value) => print(value.id));
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => Qr(name,gender,age)),
+                                    MaterialPageRoute(builder: (context) => Qr(name,gender,age,email)),
                                   );
                                 },
                                 child: Align(

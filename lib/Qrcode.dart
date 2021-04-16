@@ -1,21 +1,29 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'constant.dart';
-import 'dart:ui';
+import 'dart:ui' as ui;
 
 class Qr extends StatefulWidget {
   String name;
   String age;
   String gender;
-  Qr(this.name,this.age,this.gender);
+  String email;
+  Qr(this.name,this.age,this.gender,this.email);
 
 
 
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
-    return _QrState(name,age,gender);
+    return _QrState(name,age,gender,email);
   }
 }
 
@@ -23,12 +31,15 @@ class _QrState extends State<Qr> {
   String name;
   String age;
   String gender;
+  String email;
   String content;
-  _QrState(this.name,this.age,this.gender);
+  String urlLink;
+  _QrState(this.name, this.age, this.gender,this.email);
+  GlobalKey _renderObjectKey = new GlobalKey();
   @override
-
   Widget build(BuildContext context) {
-    content=name+" "+age+" "+gender;
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    content = name + " " + age + " " + gender;
     return SafeArea(
       child: Scaffold(
 
@@ -57,10 +68,12 @@ class _QrState extends State<Qr> {
                                 'QR CODE GENETATED',
 
 
-
                                 style: TextStyle(
                                   fontSize:
-                                  MediaQuery.of(context).size.height / 30,
+                                  MediaQuery
+                                      .of(context)
+                                      .size
+                                      .height / 30,
                                   //fontWeight: FontWeight.bold,
                                   color: Colors.white,
                                 ),
@@ -79,67 +92,45 @@ class _QrState extends State<Qr> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20.0)),
                       child: Padding(
-                        padding: EdgeInsets.all(20),
-                        child: Row(
-                          children: [
-                            QrImage(
-                              backgroundColor: Colors.white,
-                              data: content,
-                              version: QrVersions.auto,
-                              size: 100.0,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(20.0),
-                              child: Column(
-                                children: [
-                                  Text('DOWNLOAD QR',
-                                    style: TextStyle(
-                                    fontSize: MediaQuery.of(context).size.height / 45,
-                                    //fontWeight: FontWeight.bold,
-                                    color: Colors.white,),),
-                                  SizedBox(height: 20,),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Container(
-                                        height:
-                                        .75 * (MediaQuery.of(context).size.height / 14),
-                                        width: 6.1 * (MediaQuery.of(context).size.width / 22),
-                                        //margin: EdgeInsets.only(bottom: 20),
-                                        child: RaisedButton(
-                                          elevation: 1.0,
-                                          color: Color(0xff0e2441),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(30.0),
-                                            side: BorderSide(color: mainColor),
-                                          ),
-                                          onPressed: () {
-                                            print('successful');
-                                          },
-                                          child: InkWell(
-                                            onTap: () {
-                                              print('successful');
-
-                                            },
-                                            child: Align(
-                                              alignment: Alignment.center,
-                                              child: Text(
-                                                'Link',
-                                                style: TextStyle(
-                                                    fontSize: 20, color: Colors.white),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                          padding: EdgeInsets.all(20),
+                          child: Row(
+                            children: [
+                              RepaintBoundary(
+                                key: _renderObjectKey,
+                                child: QrImage(
+                                  backgroundColor: Colors.white,
+                                  data: content,
+                                  version: QrVersions.auto,
+                                  size: 100.0,
+                                ),
                               ),
-                            )
+                              Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text('YOUR DETAILS',
+                                      style: TextStyle(
+                                        fontSize: MediaQuery
+                                            .of(context)
+                                            .size
+                                            .height / 45,
+                                        //fontWeight: FontWeight.bold,
+                                        color: Colors.white,),),
+                                    SizedBox(height: 20,),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment
+                                          .center,
+                                      children: <Widget>[
 
-                          ],
-                        )
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              )
+
+                            ],
+                          )
                       ),
                     ),
                   ),
@@ -152,5 +143,5 @@ class _QrState extends State<Qr> {
       ),
     );
   }
-  }
+}
 
